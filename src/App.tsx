@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useState } from 'react';
+import { text } from 'stream/consumers';
 
 interface Note {
   id: number;
@@ -10,23 +11,62 @@ interface Note {
 interface NoteProp {
   n: Note;
 }
+
+interface Selection {
+  getRangeAt(index: number): Range;
+}
 //note page
 
-function NotePage({n} : NoteProp) {
-    return (
-        <div>
-          <h2>{n.title}</h2>
-          <p>
-          <textarea placeholder="Write your note..." value={n.content} ></textarea>
-          </p>
-        </div>
-      );
-}
 
 function App() {
   const [notes, setNotes] = useState<Note[]>(Array(0));
   const [showPopUp, setPopUp] = useState<boolean>(false);
+  const [noteContent, setNoteContent] = useState<string>('');
+  const [newContent, setNewContent] = useState<boolean[]>(Array(false));
   const [newNoteTitle, setNoteTitle] = useState<string>('');
+
+  function HandleChange(e: React.ChangeEvent<HTMLTextAreaElement>, id: number) {
+    setNoteContent(e.target.value);
+    newContent[id] = true;
+  }
+  function GetNoteContent({n}: NoteProp): string {
+    if (newContent[n.id] )
+    {
+      // n.content = noteContent;
+      newContent[n.id] = false;
+      return (noteContent);
+    }
+    return (n.content);
+  }
+  function AssignContent() {
+    notes.forEach((note) => {
+      if (newContent[note.id])
+      {
+        note.content = noteContent;
+      }
+    })
+  }
+  function MoveCursorToEnd(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    var temp = e.target.value;
+    e.target.value = '';
+    e.target.value = temp;
+  }
+  function NotePage({n} : NoteProp) {
+    AssignContent();
+    return (
+          <div>
+            <h2>{n.title}</h2>
+            <p>
+              <textarea 
+              placeholder="Write your note..."
+              autoFocus
+              onChange={(e) => HandleChange(e, n.id)}
+              onFocus={MoveCursorToEnd}
+              value={GetNoteContent({n})} ></textarea>
+            </p>
+          </div>
+        );
+  }
 
   function AddNote() {
     setPopUp(true);
