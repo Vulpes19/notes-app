@@ -9,32 +9,47 @@ interface Note {
   selected: boolean;
 }
 
-// interface NoteProp {
-//   n: Note;
-// }
-
 function App() {
   const [notes, setNotes] = useState<Note[]>(Array(0));
   // const [pressedNote, setPressedNote] = useState<boolean[]>(Array(false));
   const [showPopUp, setPopUp] = useState<boolean>(false);
   const [newNoteTitle, setNoteTitle] = useState<string>('');
-  
+  const [contentInput, setContentInput] = useState<string>('');
   
   function NotePage(n : Note) {
+    console.log(n.id);
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+    //updates the content of the note
+    useEffect(()=>{
+      if (textAreaRef.current)
+        textAreaRef.current.value = n.content;
+    },[n.content]);
+
     function UpdateContent(id: number) {
       console.log('updateContent is pressed');
+      let updatedNotes = [...notes];
       if (textAreaRef.current)
-        notes[id].content = (textAreaRef.current.value);
+      {
+        updatedNotes[id - 1].content = (textAreaRef.current.value);
+        console.log(textAreaRef);
+        // console.log(updatedNotes[id].content);
+        setNotes(updatedNotes);
+        textAreaRef.current.value = updatedNotes[id - 1].content;
+      }
+      // console.log(notes[id].content);
     }
+    
     return (
-          <div>
+      <div>
             <h2>{n.title}</h2>
-            <p>{n.content}</p>
             <textarea 
               id='text'
               placeholder="Write your note..."
-              defaultValue={''}
+              ref={textAreaRef}
+              // onChange={(e) => {
+              //   setContentInput(e.target.value);
+              //   e.target.value = contentInput;
+              // }}
               ></textarea>
               <button className='confirm' onClick={() =>
               {
@@ -60,18 +75,32 @@ function App() {
       };
       
       setNotes(prevNotes => [...prevNotes, newNote]);
+      notes.forEach(element => {
+        if (element.id != newNote.id)
+          element.selected = false;
+      });
     }
     setPopUp(false);
     setNoteTitle('');
   };
 
 
+  function HandleClick(id: number) {
+    let updatedNotes = [...notes];
+    updatedNotes.map( (note) => {
+      if (note.id == id)
+        note.selected = true;
+      else
+        note.selected = false;
+    })
+    setNotes(updatedNotes);
+  }
   //generates buttons for the existed notes
   function NoteButtons() {
     return notes.map( note => (
       <div className='row'>
-        <button className='note button' onClick={() => {
-          note.selected = true;
+        <button className='note button' onClick={ () => {
+          HandleClick(note.id);
         }}>{note.title}</button>
       </div>
   ))
@@ -82,7 +111,10 @@ function App() {
     for ( let i = 0; i < notes.length; i++)
     {
       if (notes[i].selected === true)
+      {
+        console.log(notes[i].title);
         return(notes[i]);
+      }
     };
     return (notes[0]);
   }
