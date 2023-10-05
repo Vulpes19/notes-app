@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { text } from 'stream/consumers';
+import './index.css'
 
 interface Note {
   id: number;
@@ -146,7 +147,7 @@ function App() {
         </div>
       )
       }
-      <div className='addButton' onClick={AddNote}>
+      <div className='bg-blue-500' onClick={AddNote}>
         <button>Add Note</button>
       </div>
     </div>
