@@ -6,64 +6,40 @@ interface Note {
   id: number;
   title: string;
   content: string;
+  selected: boolean;
 }
 
-interface NoteProp {
-  n: Note;
-}
-
-interface Selection {
-  getRangeAt(index: number): Range;
-}
-//note page
-
+// interface NoteProp {
+//   n: Note;
+// }
 
 function App() {
   const [notes, setNotes] = useState<Note[]>(Array(0));
+  // const [pressedNote, setPressedNote] = useState<boolean[]>(Array(false));
   const [showPopUp, setPopUp] = useState<boolean>(false);
-  const [noteContent, setNoteContent] = useState<string>('');
-  const [newContent, setNewContent] = useState<boolean[]>(Array(false));
   const [newNoteTitle, setNoteTitle] = useState<string>('');
-
-  function HandleChange(e: React.ChangeEvent<HTMLTextAreaElement>, id: number) {
-    setNoteContent(e.target.value);
-    newContent[id] = true;
-  }
-  function GetNoteContent({n}: NoteProp): string {
-    if (newContent[n.id] )
-    {
-      // n.content = noteContent;
-      newContent[n.id] = false;
-      return (noteContent);
+  
+  
+  function NotePage(n : Note) {
+    const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+    function UpdateContent(id: number) {
+      console.log('updateContent is pressed');
+      if (textAreaRef.current)
+        notes[id].content = (textAreaRef.current.value);
     }
-    return (n.content);
-  }
-  function AssignContent() {
-    notes.forEach((note) => {
-      if (newContent[note.id])
-      {
-        note.content = noteContent;
-      }
-    })
-  }
-  function MoveCursorToEnd(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    var temp = e.target.value;
-    e.target.value = '';
-    e.target.value = temp;
-  }
-  function NotePage({n} : NoteProp) {
-    AssignContent();
     return (
           <div>
             <h2>{n.title}</h2>
-            <p>
-              <textarea 
+            <p>{n.content}</p>
+            <textarea 
+              id='text'
               placeholder="Write your note..."
-              autoFocus
-              onChange={(e) => HandleChange(e, n.id)}
-              onFocus={MoveCursorToEnd}
-              value={GetNoteContent({n})} ></textarea>
-            </p>
+              defaultValue={''}
+              ></textarea>
+              <button className='confirm' onClick={() =>
+              {
+                UpdateContent(n.id);
+              }}>c</button>
           </div>
         );
   }
@@ -72,40 +48,58 @@ function App() {
     setPopUp(true);
   };
 
+  //confirm the addition of a note with title
   function ConfirmTitle() {
     if ( newNoteTitle !== '' )
     {
       const newNote: Note = {
         id: notes.length + 1,
         title: newNoteTitle,
-        content: ''
+        content: '',
+        selected: true
       };
+      
       setNotes(prevNotes => [...prevNotes, newNote]);
     }
     setPopUp(false);
     setNoteTitle('');
   };
+
+
+  //generates buttons for the existed notes
   function NoteButtons() {
     return notes.map( note => (
       <div className='row'>
-        <button className='note button'>{note.title}</button>
-        {/* <div className='content'> */}
-          {/* <h2>{note.title}</h2> */}
-          {/* <textarea defaultValue="Write your note..." value={note.content} ></textarea> */}
-          {/* <p>{note.content}</p> */}
-        {/* </div> */}
+        <button className='note button' onClick={() => {
+          note.selected = true;
+        }}>{note.title}</button>
       </div>
   ))
   };
+
+  //checks which note is selected and returns it to show its content
+  function SelectNote(): Note {
+    for ( let i = 0; i < notes.length; i++)
+    {
+      if (notes[i].selected === true)
+        return(notes[i]);
+    };
+    return (notes[0]);
+  }
+
   return (
     <div>
       <div className='note list'>
         {NoteButtons()}
       </div>
-      <div className='content'>
+      <div>
+      { notes.length > 0 ? (<div className='content'>
         {
-          notes.map(note =>( <NotePage n={note}/>))
+            <NotePage  {...SelectNote()} />
         }
+      </div>) : (
+        <p>no notes created</p>
+      )}
       </div>
       {showPopUp && (
         <div className='popup'>
