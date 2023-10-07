@@ -10,12 +10,18 @@ interface Note {
   selected: boolean;
 }
 
+const sideBar_css: string = 'bg-MidGray h-screen w-64 z-0 fixed top-0 left-26 rounded';
+const addButton_css: string = 'bg-WhitishYellow text-black z-10 absolute bottom-5 left-10 rounded text-xl w-40 h-10 flex items-center justify-center';
+const confirmButton_css: string = 'bg-WhitishYellow text-black z-10 rounded';
+const noteButtons_css: string = 'bg-WhitishYellow text-black z-10 rounded';
+const noteContent_css: string = 'text-black';
+
 function App() {
   const [notes, setNotes] = useState<Note[]>(Array(0));
   // const [pressedNote, setPressedNote] = useState<boolean[]>(Array(false));
   const [showPopUp, setPopUp] = useState<boolean>(false);
   const [newNoteTitle, setNoteTitle] = useState<string>('');
-  const [contentInput, setContentInput] = useState<string>('');
+  // const [contentInput, setContentInput] = useState<string>('');
   
   function NotePage(n : Note) {
     console.log(n.id);
@@ -33,11 +39,9 @@ function App() {
       {
         updatedNotes[id - 1].content = (textAreaRef.current.value);
         console.log(textAreaRef);
-        // console.log(updatedNotes[id].content);
         setNotes(updatedNotes);
         textAreaRef.current.value = updatedNotes[id - 1].content;
       }
-      // console.log(notes[id].content);
     }
     
     return (
@@ -47,10 +51,6 @@ function App() {
               id='text'
               placeholder="Write your note..."
               ref={textAreaRef}
-              // onChange={(e) => {
-              //   setContentInput(e.target.value);
-              //   e.target.value = contentInput;
-              // }}
               ></textarea>
               <button className='confirm' onClick={() =>
               {
@@ -77,7 +77,7 @@ function App() {
       
       setNotes(prevNotes => [...prevNotes, newNote]);
       notes.forEach(element => {
-        if (element.id != newNote.id)
+        if (element.id !== newNote.id)
           element.selected = false;
       });
     }
@@ -89,7 +89,7 @@ function App() {
   function HandleClick(id: number) {
     let updatedNotes = [...notes];
     updatedNotes.map( (note) => {
-      if (note.id == id)
+      if (note.id === id)
         note.selected = true;
       else
         note.selected = false;
@@ -100,7 +100,7 @@ function App() {
   function NoteButtons() {
     return notes.map( note => (
       <div className='row'>
-        <button className='note button' onClick={ () => {
+        <button className={noteButtons_css} onClick={ () => {
           HandleClick(note.id);
         }}>{note.title}</button>
       </div>
@@ -122,17 +122,18 @@ function App() {
 
   return (
     <div>
+      <div className={sideBar_css}></div>
       <div className='note list'>
         {NoteButtons()}
       </div>
       <div>
       { notes.length > 0 ? (<div className='content'>
         {
-            <NotePage  {...SelectNote()} />
+          <NotePage  {...SelectNote()} />
         }
-      </div>) : (
-        <p>no notes created</p>
-      )}
+      </div >) : (
+        <div className='absolute top-20 right-40 left-85 text-xl' ><p>no notes created</p></div>
+        )}
       </div>
       {showPopUp && (
         <div className='popup'>
@@ -142,12 +143,12 @@ function App() {
           value={newNoteTitle}
           onChange={(e) => setNoteTitle(e.target.value)}
           ></input>
-          <button className='confirm' onClick={ConfirmTitle}>Confirm</button>
-          <button className='cancel' onClick={() => setPopUp(false)}>cancel</button>
+          <button className={confirmButton_css} onClick={ConfirmTitle}>Confirm</button>
+          <button className={confirmButton_css} onClick={() => setPopUp(false)}>cancel</button>
         </div>
       )
       }
-      <div className='bg-blue-500' onClick={AddNote}>
+      <div className={addButton_css} onClick={AddNote}>
         <button>Add Note</button>
       </div>
     </div>
