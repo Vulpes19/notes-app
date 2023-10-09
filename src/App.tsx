@@ -10,10 +10,10 @@ interface Note {
   selected: boolean;
 }
 
-const sideBar_css: string = 'bg-MidGray h-screen w-64 z-0 fixed top-0 left-26 rounded';
-const addButton_css: string = 'bg-WhitishYellow text-black z-10 absolute bottom-5 left-10 rounded text-xl w-40 h-10 flex items-center justify-center';
-const confirmButton_css: string = 'bg-WhitishYellow text-black z-10 rounded';
-const noteButtons_css: string = 'bg-WhitishYellow text-black z-10 rounded';
+const sideBar_css: string = 'static bg-MidGray h-screen w-64 z-0 fixed top-0 left-26 rounded';
+const addButton_css: string = 'static bg-WhitishYellow text-black z-10 absolute bottom-5 left-10 rounded text-xl w-40 h-10 flex items-center justify-center';
+const confirmButton_css: string = 'static bg-WhitishYellow text-black z-10 rounded';
+const noteButtons_css: string = 'static bg-WhitishYellow text-black z-10 rounded';
 const noteContent_css: string = 'text-black';
 
 function App() {
