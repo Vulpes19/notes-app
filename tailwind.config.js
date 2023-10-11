@@ -10,10 +10,14 @@ module.exports = {
       'black': '#000000',
       'WhitishYellow': '#FFD6BA',
       'blue': '#636A81',
+      'bluehover': '#7A83A0',
+      'WhitishYellowhover': '#FFEADB',
     },
-    extend: {},
+    extend: {
+      fontFamily: {
+        'poppins': ['Poppins', 'sans-serif'],
+      },
+    }
   },
-  plugins: [
-  ],
+  plugins: [],
 }
-

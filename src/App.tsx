@@ -11,10 +11,9 @@ interface Note {
 
 function App() {
   const [notes, setNotes] = useState<Note[]>(Array(0));
-  // const [pressedNote, setPressedNote] = useState<boolean[]>(Array(false));
+  const [deletedNote, setDeleteNote] = useState<boolean>(false);
   const [showPopUp, setPopUp] = useState<boolean>(false);
   const [newNoteTitle, setNoteTitle] = useState<string>('');
-  // const [contentInput, setContentInput] = useState<string>('');
   
   function NotePage(n : Note) {
     console.log(n.id);
@@ -39,8 +38,13 @@ function App() {
     
     return (
       <div>
-            <h2 className='ml-6 text-4xl font-bold'>{n.title}</h2>
-            <div className='mt-2 w-full border-b-2 border-black'></div>
+            <div className='flex flex-row justify-between'>
+              <div><h2 className='ml-6 text-4xl font-bold font-sans'>{n.title}</h2></div>
+              <div className='self-end text-2xl hover:text-blue'><button onClick={() => {
+                setDeleteNote(true);
+              }}>...</button></div>
+            </div>
+            <div className='mt-2 w-full border-b-2 border-black font-sans'></div>
             <textarea 
             className='mt-5 bg-pink w-full h-80 text-black z-10 border-hidden rounded'
               id='text'
@@ -49,7 +53,7 @@ function App() {
               rows={100}
               ref={textAreaRef}
               ></textarea>
-              <button className='bg-WhitishYellow rounded w-20 text-center font-semibold' onClick={() =>
+              <button className='bg-WhitishYellow rounded w-20 text-center font-semibold hover-bg-WhitishYellowhover' onClick={() =>
               {
                 UpdateContent(n.id);
               }}>save</button>
@@ -97,7 +101,7 @@ function App() {
   function NoteButtons() {
     return (
       notes.map( note => (
-        <button className='bg-blue ml-5 w-40 h-10 text-white rounded' onClick={ () => {
+        <button className='bg-blue ml-5 w-40 h-10 text-white font-semibold rounded hover:text-WhitishYellow hover:bg-bluehover' onClick={ () => {
           HandleClick(note.id);
         }}>{note.title}</button>
       ))
@@ -119,10 +123,10 @@ function App() {
   return (
     <div className='flex flex-row h-full w-full bg-pink'>
       {/* sidebar */}
-      <div className='flex flex-col space-y-3 w-64 bg-MidGray h-screen rounded-r-2xl'>
-        <div className='text-4xl text-WhitishYellow ml-4 mt-4 [text-shadow:_0_1px_0_rgb(0_0_0_/_60%)]'><h1>MyNotes</h1></div>
-        <div className='mt-40'>{NoteButtons()}</div>
-        <div className='absolute bg-WhitishYellow w-40 text-center rounded bottom-4 ml-5 self-baseline font-bold' onClick={AddNote}><button>Add Note</button></div>
+      <div className='flex flex-col w-64 bg-MidGray h-screen rounded-r-2xl'>
+        <div className='text-3xl text-WhitishYellow ml-6 mt-4 font-bold italic font-poppins'><h1>MyNotes</h1></div>
+        <div className='mt-20 space-y-2'>{NoteButtons()}</div>
+        <div onClick={AddNote}><button className='absolute bg-WhitishYellow w-40 text-center rounded bottom-4 ml-5 self-baseline font-bold hover:bg-WhitishYellowhover'>Add Note</button></div>
       </div>
       {/* note content */}
       <div className='bg-pink w-full flex-col m-6'>
@@ -145,8 +149,8 @@ function App() {
             ></input>
             </div>
             <div className='flex flex-row'>
-              <div><button className='ml-5 mt-5 bg-WhitishYellow w-20 text-black z-10 rounded' onClick={ConfirmTitle}>Confirm</button></div>
-              <div><button className='ml-16 mt-5 bg-WhitishYellow w-20 text-black z-10 rounded' onClick={() => setPopUp(false)}>Cancel</button></div>
+              <div><button className='ml-5 mt-5 bg-WhitishYellow w-20 text-black z-10 rounded font-semibold hover-bg-WhitishYellowhover' onClick={ConfirmTitle}>Confirm</button></div>
+              <div><button className='ml-16 mt-5 bg-WhitishYellow w-20 text-black z-10 rounded font-semibold hover-bg-WhitishYellowhover' onClick={() => setPopUp(false)}>Cancel</button></div>
             </div>
           </div>
           )}
